@@ -11,6 +11,9 @@ class Window(Frame):
         self.input_hash = StringVar()
         self.hash_type = IntVar()
         self.input_message = StringVar()
+
+        self.hashed_message = Label(self.master)
+
         self.init_window()
 
     def init_window(self):
@@ -23,7 +26,7 @@ class Window(Frame):
         hash_input.grid(row=0, column=1, sticky=tkinter.W)
 
         result = Label(self.master, text="Decrypted: ")
-        result.grid(row=2, sticky=W)
+        result.grid(row=2, sticky=tkinter.W)
 
         # Decrypt button calls the decrypt function
         decrypt_button = Button(self.master, text="Decrypt", command=self.decrypt)
@@ -33,32 +36,43 @@ class Window(Frame):
         text_input = Entry(self.master, textvariable=self.input_message)
         text_input.grid(row=4, column=1, sticky=tkinter.W)
 
+        sha_radio = Radiobutton(self.master, text='SHA1', variable =self.hash_type, value=0)
         md5_radio = Radiobutton(self.master, text='MD5', variable=self.hash_type, value=1)
-        sha_radio = Radiobutton(self.master, text='SHA1', variable =self.hash_type, value=2)
-        md5_radio.grid(row=5, column=0, sticky=W)
-        sha_radio.grid(row=5, column=1, sticky=W)
+        sha_radio.grid(row=5, column=0, sticky=tkinter.W)
+        md5_radio.grid(row=5, column=1, sticky=tkinter.W)
 
         Label(self.master, text="Hashed Message: ").grid(row=6, column=0, sticky=tkinter.W)
-        hash_button = Button(self.master, text="Encrypt", command=self.hash_sha1)
+        hash_button = Button(self.master, text="Hash", command=self.hash)
         hash_button.grid(row=7, sticky=tkinter.W)
+
+        self.hashed_message.grid(row=6, column=1, sticky=tkinter.W)
 
     def decrypt(self):
         # TODO: Take the text string and pass it to decryption algorithm
         text = self.input_hash.get()
-        
+
         # TODO: Print the decrypted message
         Label(self.master, text="                                        ").grid(row=1, column=1, sticky=tkinter.W)
         Label(self.master, text=text).grid(row=1, column=1, sticky=tkinter.W)
         print(text)
 
-    def hash_sha1(self):
-        text = self.input_message.get()
-        hashed_text = bytes(text, 'utf-8')
-        hash_object = hashlib.sha1(hashed_text)
-        digest = hash_object.hexdigest()
-        Label(self.master, text="                                        ").grid(row=5, column=1, sticky=tkinter.W)
-        Label(self.master, text=digest).grid(row=5, column=1)
-        print(digest)
+    def hash(self):
+        choice = self.hash_type.get()
+        switcher = {
+            0:hashlib.sha1,
+            1:hashlib.md5,
+        }
+        hash_func = switcher.get(choice, lambda: 'default')
+        
+        text = self.input_message.get().strip()
+
+        if text:
+            hashed_text = bytes(text, 'utf-8')
+            hash_object = hash_func(hashed_text)
+            digest = hash_object.hexdigest()
+            self.hashed_message.config(text=digest)
+            print(digest)
+
 
 
 root = Tk()
