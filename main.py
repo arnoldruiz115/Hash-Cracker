@@ -50,11 +50,22 @@ class Window(Frame):
 
     def decrypt(self):
         # TODO: Take the text string and pass it to decryption algorithm
-        text = self.input_hash.get()
+        user_input_hash = self.input_hash.get()
+        user_input_hash.strip()
 
-        response = requests.get('https://www.nitrxgen.net/md5db/' + text).text
+        response = None
+        f = open("db.txt", "r", encoding='utf-8')
+        for x in f:
+            x = x.replace('\n', '')
+            temp_hash = bytes(x, 'utf-8')
+            hash_object = hashlib.sha1(temp_hash)
+            digest = hash_object.hexdigest()
+            if digest == user_input_hash:
+                response = x
+        f.close()
 
-        # TODO: Get the decrypted message and store it
+        # from web api
+        # response = requests.get('https://www.nitrxgen.net/md5db/' + text).text
 
         text_object = StringVar()
         text_object.set(response)
