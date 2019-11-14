@@ -1,7 +1,10 @@
 import tkinter
 from tkinter import *
-import requests
+# import requests
+import string
+import itertools
 import hashlib
+
 
 class Window(Frame):
     def __init__(self, master=None):
@@ -59,15 +62,14 @@ class Window(Frame):
         user_input_hash.strip()
 
         choice = self.decrypt_type.get()
-        hash_func = self.getHashAlgorithm(choice)
+        hash_func = get_hash_algorithm(choice)
 
         response = None
 
         print('Currently Hashing...')
-        f = open("rockyou.txt", "r", encoding='latin-1')
+        f = open("db.txt", "r", encoding='latin-1')
         for x in f:
             x = x.replace('\n', '')
-            print(x)
             temp_hash = bytes(x, 'utf-8')
             hash_object = hash_func(temp_hash)
             digest = hash_object.hexdigest()
@@ -84,11 +86,13 @@ class Window(Frame):
             Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
             Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
         else:
-            Label(self.master, text="Message not Found").grid(row=1, column=1, sticky=tkinter.W)
+            Label(self.master, text="Message not found in wordlist").grid(row=1, column=1, sticky=tkinter.W)
+            Button(self.master, text="Try Brute Force", command=lambda: self.brute_force(user_input_hash))\
+                .grid(row=1, column=2, sticky=tkinter.W)
 
     def hash(self):
         choice = self.hash_type.get()
-        hash_func = self.getHashAlgorithm(choice)
+        hash_func = get_hash_algorithm(choice)
         
         text = self.input_message.get().strip()
 
@@ -100,16 +104,35 @@ class Window(Frame):
             digest_object.set(digest)
             self.hashed_message.config(textvariable=digest_object, width=50)
 
-    def getHashAlgorithm(self, algo):
-         switcher = {
-            0: hashlib.sha1,
-            1: hashlib.md5,
-         }
-         return switcher.get(algo, lambda: 'default')
+    def brute_force(self, hashed_message):
+        chars = string.ascii_lowercase + string.digits
+        choice = self.decrypt_type.get()
+        hash_func = get_hash_algorithm(choice)
+
+        for length in range(1, 5):
+            for guess in itertools.product(chars, repeat=length):
+                guess = ''.join(guess)
+                guess_text = bytes(guess, 'utf-8')
+                guess_object = hash_func(guess_text)
+                digest = guess_object.hexdigest()
+                if digest == hashed_message:
+                    text_object = StringVar()
+                    text_object.set(guess)
+                    Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
+                    Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
+
+
+def get_hash_algorithm(algo):
+    switcher = {
+        0: hashlib.sha1,
+        1: hashlib.md5,
+    }
+    return switcher.get(algo, lambda: 'default')
+
 
 root = Tk()
 # size of window
-root.geometry("500x300")
+root.geometry("550x400")
 
 
 app = Window(root)
