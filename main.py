@@ -1,12 +1,7 @@
-import re
-import requests
 import tkinter
 from tkinter import *
 import requests
 import hashlib
-import itertools
-import string
-import sys
 
 class Window(Frame):
     def __init__(self, master=None):
@@ -24,20 +19,6 @@ class Window(Frame):
 
     def init_window(self):
         self.master.title("Hash Cracker")
-
-        Label(self.master, text="Enter Password: ").grid(row=4, column=0, sticky=tkinter.W)
-        text_input = Entry(self.master, textvariable=self.input_message)
-        text_input.grid(row=4, column=1, sticky=tkinter.W)
-
-        sha_radio = Radiobutton(self.master, text='MD5', variable =self.hash_type, value=0)
-        md5_radio = Radiobutton(self.master, text='SHA1', variable=self.hash_type, value=1)
-        sha_radio.grid(row=5, column=0, sticky=tkinter.W)
-        md5_radio.grid(row=5, column=1, sticky=tkinter.W)
-
-        Label(self.master, text="Hashed Password: ").grid(row=6, column=0, sticky=tkinter.W)
-        hash_button = Button(self.master, text="Hash", command=self.hash)
-        hash_button.grid(row=7, sticky=tkinter.W)
-        self.hashed_message.grid(row=6, column=1, sticky=tkinter.W)
 
         Label(self.master, text="Encrypted Message: ").grid(row=0, sticky=tkinter.W)
 
