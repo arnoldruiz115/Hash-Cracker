@@ -76,19 +76,19 @@ class Window(Frame):
         # TODO: Take the text string and pass it to decryption algorithm
         user_input_hash = self.input_hash.get()
         user_input_hash.strip()
-        decrypt_var = self.decrypt_type.get()
+
+        choice = self.decrypt_type.get()
+        hash_func = self.getHashAlgorithm(choice)
 
         response = None
 
-        f = open("db.txt", "r", encoding='utf-8')
+        print('Currently Hashing...')
+        f = open("wordlists/rockyou.txt", "r", encoding='utf-8')
         for x in f:
             x = x.replace('\n', '')
+            print(x)
             temp_hash = bytes(x, 'utf-8')
-            hash_object = None
-            if decrypt_var == 0:
-                hash_object = hashlib.sha1(temp_hash)
-            if decrypt_var == 1:
-                hash_object = hashlib.md5(temp_hash)
+            hash_object = hash_func(temp_hash)
             digest = hash_object.hexdigest()
             if digest == user_input_hash:
                 response = x
@@ -104,11 +104,7 @@ class Window(Frame):
 
     def hash(self):
         choice = self.hash_type.get()
-        switcher = {
-            0: hashlib.sha1,
-            1: hashlib.md5,
-        }
-        hash_func = switcher.get(choice, lambda: 'default')
+        hash_func = self.getHashAlgorithm(choice)
         
         text = self.input_message.get().strip()
 
@@ -120,6 +116,12 @@ class Window(Frame):
             digest_object.set(digest)
             self.hashed_message.config(textvariable=digest_object, width=50)
 
+    def getHashAlgorithm(self, algo):
+         switcher = {
+            0: hashlib.sha1,
+            1: hashlib.md5,
+         }
+         return switcher.get(algo, lambda: 'default')
 
 root = Tk()
 # size of window
