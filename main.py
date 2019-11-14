@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import *
+import requests
 import hashlib
 
 
@@ -51,10 +52,12 @@ class Window(Frame):
         # TODO: Take the text string and pass it to decryption algorithm
         text = self.input_hash.get()
 
-        # TODO: Get the decrypted message and store it in 'text'
+        response = requests.get('https://www.nitrxgen.net/md5db/' + text).text
+
+        # TODO: Get the decrypted message and store it
 
         text_object = StringVar()
-        text_object.set(text)
+        text_object.set(response)
         Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
         Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
 
