@@ -62,7 +62,7 @@ class Window(Frame):
 
         response = None
 
-        f = open("db.txt", "r", encoding='utf-8')
+        f = open("rockyou.txt", "r", encoding='latin-1')
         for x in f:
             x = x.replace('\n', '')
             temp_hash = bytes(x, 'utf-8')
@@ -74,6 +74,7 @@ class Window(Frame):
             digest = hash_object.hexdigest()
             if digest == user_input_hash:
                 response = x
+                break
         f.close()
 
         # from web api

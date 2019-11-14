@@ -1,3 +1,5 @@
 pokemon
 hello
 word
+123$
+/lasd
