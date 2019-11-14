@@ -83,7 +83,7 @@ class Window(Frame):
         response = None
 
         print('Currently Hashing...')
-        f = open("wordlists/rockyou.txt", "r", encoding='utf-8')
+        f = open("rockyou.txt", "r", encoding='latin-1')
         for x in f:
             x = x.replace('\n', '')
             print(x)
@@ -92,6 +92,7 @@ class Window(Frame):
             digest = hash_object.hexdigest()
             if digest == user_input_hash:
                 response = x
+                break
         f.close()
 
         # from web api
@@ -101,6 +102,8 @@ class Window(Frame):
             text_object.set(response)
             Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
             Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
+        else:
+            Label(self.master, text="Message not Found").grid(row=1, column=1, sticky=tkinter.W)
 
     def hash(self):
         choice = self.hash_type.get()
