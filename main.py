@@ -23,7 +23,7 @@ class Window(Frame):
         hash_input.grid(row=0, column=1, sticky=tkinter.W)
 
         result = Label(self.master, text="Decrypted: ")
-        result.grid(row=2, sticky=W)
+        result.grid(row=1, sticky=W)
 
         # Decrypt button calls the decrypt function
         decrypt_button = Button(self.master, text="Decrypt", command=self.decrypt)
@@ -34,7 +34,7 @@ class Window(Frame):
         text_input.grid(row=4, column=1, sticky=tkinter.W)
 
         md5_radio = Radiobutton(self.master, text='MD5', variable=self.hash_type, value=1)
-        sha_radio = Radiobutton(self.master, text='SHA1', variable =self.hash_type, value=2)
+        sha_radio = Radiobutton(self.master, text='SHA1', variable=self.hash_type, value=2)
         md5_radio.grid(row=5, column=0, sticky=W)
         sha_radio.grid(row=5, column=1, sticky=W)
 
@@ -56,8 +56,8 @@ class Window(Frame):
         hashed_text = bytes(text, 'utf-8')
         hash_object = hashlib.sha1(hashed_text)
         digest = hash_object.hexdigest()
-        Label(self.master, text="                                        ").grid(row=5, column=1, sticky=tkinter.W)
-        Label(self.master, text=digest).grid(row=5, column=1)
+        Label(self.master, text="                                        ").grid(row=6, column=1, sticky=tkinter.W)
+        Label(self.master, text=digest).grid(row=6, column=1)
         print(digest)
 
 
