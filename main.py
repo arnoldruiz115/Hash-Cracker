@@ -11,6 +11,7 @@ class Window(Frame):
         # Variable to store the user input (Encrypted Message)
         self.input_hash = StringVar()
         self.hash_type = IntVar()
+        self.decrypt_type = IntVar()
         self.input_message = StringVar()
 
         self.hashed_message = Entry(self.master, width=50)
@@ -37,10 +38,15 @@ class Window(Frame):
         text_input = Entry(self.master, textvariable=self.input_message, width=50)
         text_input.grid(row=4, column=1, sticky=tkinter.W)
 
-        sha_radio = Radiobutton(self.master, text='SHA1', variable =self.hash_type, value=0)
+        sha_radio = Radiobutton(self.master, text='SHA1', variable=self.hash_type, value=0)
         md5_radio = Radiobutton(self.master, text='MD5', variable=self.hash_type, value=1)
         sha_radio.grid(row=5, column=0, sticky=tkinter.W)
         md5_radio.grid(row=5, column=1, sticky=tkinter.W)
+
+        sha_decrypt = Radiobutton(self.master, text='SHA1', variable=self.decrypt_type, value=0)
+        md5_decrypt = Radiobutton(self.master, text='MD5', variable=self.decrypt_type, value=1)
+        sha_decrypt.grid(row=2, column=0, sticky=tkinter.W)
+        md5_decrypt.grid(row=2, column=1, sticky=tkinter.W)
 
         Label(self.master, text="Hashed Message: ").grid(row=6, column=0, sticky=tkinter.W)
         hash_button = Button(self.master, text="Hash", command=self.hash)
@@ -52,13 +58,19 @@ class Window(Frame):
         # TODO: Take the text string and pass it to decryption algorithm
         user_input_hash = self.input_hash.get()
         user_input_hash.strip()
+        decrypt_var = self.decrypt_type.get()
 
         response = None
+
         f = open("db.txt", "r", encoding='utf-8')
         for x in f:
             x = x.replace('\n', '')
             temp_hash = bytes(x, 'utf-8')
-            hash_object = hashlib.sha1(temp_hash)
+            hash_object = None
+            if decrypt_var == 0:
+                hash_object = hashlib.sha1(temp_hash)
+            if decrypt_var == 1:
+                hash_object = hashlib.md5(temp_hash)
             digest = hash_object.hexdigest()
             if digest == user_input_hash:
                 response = x
@@ -66,7 +78,6 @@ class Window(Frame):
 
         # from web api
         # response = requests.get('https://www.nitrxgen.net/md5db/' + text).text
-
         text_object = StringVar()
         text_object.set(response)
         Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
