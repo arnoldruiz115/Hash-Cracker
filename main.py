@@ -84,6 +84,8 @@ class Window(Frame):
             text_object.set(response)
             Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
             Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
+        else:
+            Label(self.master, text="Message not Found").grid(row=1, column=1, sticky=tkinter.W)
 
     def hash(self):
         choice = self.hash_type.get()
