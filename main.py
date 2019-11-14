@@ -73,8 +73,6 @@ class Window(Frame):
             self.hashed_message.config(text=digest)
             print(digest)
 
-
-
 root = Tk()
 # size of window
 root.geometry("400x200")
