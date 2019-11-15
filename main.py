@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import *
-# import requests
+import requests
 import string
 import itertools
 import hashlib
@@ -33,28 +33,35 @@ class Window(Frame):
         result.grid(row=1, sticky=tkinter.W)
 
         # Decrypt button calls the decrypt function
-        decrypt_button = Button(self.master, text="Decrypt", command=self.decrypt)
+        decrypt_button = Button(self.master, text="Crack", command=self.decrypt)
         decrypt_button.grid(row=3, column=0, sticky=tkinter.W)
 
-        Label(self.master, text="Enter Message: ").grid(row=4, column=0, sticky=tkinter.W)
+        Button(self.master, text="Try Brute Force", command=lambda: self.brute_force(self.input_hash.get())) \
+            .grid(row=3, column=1, sticky=tkinter.W)
+        Button(self.master, text="Try Web (MD5 Only)", command=lambda: self.get_web(self.input_hash.get())) \
+            .grid(row=3, column=2, sticky=tkinter.W)
+
+        Label(self.master, text=" ").grid(row=4, column=0, sticky=tkinter.W)
+        Label(self.master, text=" ").grid(row=5, column=0, sticky=tkinter.W)
+        Label(self.master, text="Enter Message: ").grid(row=6, column=0, sticky=tkinter.W)
         text_input = Entry(self.master, textvariable=self.input_message, width=50)
-        text_input.grid(row=4, column=1, sticky=tkinter.W)
+        text_input.grid(row=6, column=1, sticky=tkinter.W)
 
         sha_radio = Radiobutton(self.master, text='SHA1', variable=self.hash_type, value=0)
         md5_radio = Radiobutton(self.master, text='MD5', variable=self.hash_type, value=1)
-        sha_radio.grid(row=5, column=0, sticky=tkinter.W)
-        md5_radio.grid(row=5, column=1, sticky=tkinter.W)
+        sha_radio.grid(row=7, column=0, sticky=tkinter.W)
+        md5_radio.grid(row=7, column=1, sticky=tkinter.W)
 
         sha_decrypt = Radiobutton(self.master, text='SHA1', variable=self.decrypt_type, value=0)
         md5_decrypt = Radiobutton(self.master, text='MD5', variable=self.decrypt_type, value=1)
         sha_decrypt.grid(row=2, column=0, sticky=tkinter.W)
         md5_decrypt.grid(row=2, column=1, sticky=tkinter.W)
 
-        Label(self.master, text="Hashed Message: ").grid(row=6, column=0, sticky=tkinter.W)
+        Label(self.master, text="Hashed Message: ").grid(row=8, column=0, sticky=tkinter.W)
         hash_button = Button(self.master, text="Hash", command=self.hash)
-        hash_button.grid(row=7, sticky=tkinter.W)
+        hash_button.grid(row=9, sticky=tkinter.W)
 
-        self.hashed_message.grid(row=6, column=1, sticky=tkinter.W)
+        self.hashed_message.grid(row=8, column=1, sticky=tkinter.W)
 
     def decrypt(self):
         # TODO: Take the text string and pass it to decryption algorithm
@@ -67,7 +74,7 @@ class Window(Frame):
         response = None
 
         print('Currently Hashing...')
-        f = open("db.txt", "r", encoding='latin-1')
+        f = open("rockyou.txt", "r", encoding='latin-1')
         for x in f:
             x = x.replace('\n', '')
             temp_hash = bytes(x, 'utf-8')
@@ -78,8 +85,6 @@ class Window(Frame):
                 break
         f.close()
 
-        # from web api
-        # response = requests.get('https://www.nitrxgen.net/md5db/' + text).text
         if response is not None:
             text_object = StringVar()
             text_object.set(response)
@@ -87,8 +92,15 @@ class Window(Frame):
             Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
         else:
             Label(self.master, text="Message not found in wordlist").grid(row=1, column=1, sticky=tkinter.W)
-            Button(self.master, text="Try Brute Force", command=lambda: self.brute_force(user_input_hash))\
-                .grid(row=1, column=2, sticky=tkinter.W)
+
+    def get_web(self, text):
+        # from web api
+        response = requests.get('https://www.nitrxgen.net/md5db/' + text).text
+        text_object = StringVar()
+        text_object.set(response)
+        Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
+        Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
+        Label(self.master, text=" " * 80).grid(row=1, column=2, sticky=tkinter.W)
 
     def hash(self):
         choice = self.hash_type.get()
