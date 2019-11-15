@@ -109,7 +109,7 @@ class Window(Frame):
         choice = self.decrypt_type.get()
         hash_func = get_hash_algorithm(choice)
         found = False
-        for length in range(1, 5):
+        for length in range(1, 6):
             for guess in itertools.product(chars, repeat=length):
                 guess = ''.join(guess)
                 guess_text = bytes(guess, 'utf-8')
@@ -122,6 +122,8 @@ class Window(Frame):
                     Label(self.master, text=" " * 80).grid(row=1, column=1, sticky=tkinter.W)
                     Entry(self.master, textvariable=text_object, width=50).grid(row=1, column=1, sticky=tkinter.W)
                     Label(self.master, text=" " * 80).grid(row=1, column=2, sticky=tkinter.W)
+                if found:
+                    break
         if not found:
             Label(self.master, text=" " * 60).grid(row=1, column=1, sticky=tkinter.W)
             Label(self.master, text="Message too long to crack.").grid(row=1, column=1, sticky=tkinter.W)
